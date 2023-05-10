@@ -11,8 +11,8 @@
 #define WITH_CUDA
 
 // if using cuda then just include the appropriate header
-#ifdef WITH_CUDA
+// #ifdef WITH_CUDA
 
 #include <cuda_runtime.h>
 
-#endif
+// #endif

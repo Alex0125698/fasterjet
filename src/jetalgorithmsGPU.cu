@@ -30,12 +30,10 @@ void makeRandomParticlesGPU(JetDataGPU& d, const int N)
 }
 
 // square of x
-#ifdef WITH_CUDA
 __device__ inline float sqr(const float x)
 {
    return x*x;
 }
-#endif
 
 // extend JetDataPrivate with GPU-specific stuff
 
@@ -44,14 +42,12 @@ struct JetDataPrivateGPU : public JetDataPrivate
    void free()
    {
       JetDataPrivate::free();
-      #ifdef WITH_CUDA
       if (gpu_particles != nullptr) cudaFree(gpu_particles);
       if (gpu_mindists != nullptr) cudaFree(gpu_mindists);
       if (gpu_others != nullptr) cudaFree(gpu_others);
       gpu_particles = nullptr;
       gpu_mindists = nullptr;
       gpu_others = nullptr;
-      #endif
    }
 
    void init(const std::vector<Particle>& p)
@@ -61,14 +57,12 @@ struct JetDataPrivateGPU : public JetDataPrivate
       if (pnReserve < nReserve)
       {
          // free();
-         #ifdef WITH_CUDA
          assert (gpu_particles == nullptr);
          assert (gpu_mindists == nullptr);
          assert (gpu_others == nullptr);
          cudaMalloc(&gpu_particles, nReserve*sizeof(Particle));
          cudaMalloc(&gpu_mindists, nReserve*sizeof(float));
          cudaMalloc(&gpu_others, nReserve*sizeof(int));
-         #endif
          pnReserve = nReserve;
       }
    }
@@ -76,18 +70,14 @@ struct JetDataPrivateGPU : public JetDataPrivate
    // fill in gpu_particles from particles
    void copyCPU2GPU()
    {
-      #ifdef WITH_CUDA
       cudaMemcpy(gpu_particles, &(particles[0]), nParticles * sizeof(Particle), cudaMemcpyHostToDevice);
-      #endif
    }
 
    // fill in mindists, others from gpu_mindists, gpu_others
    void copyGPU2CPU()
    {
-      #ifdef WITH_CUDA
       cudaMemcpy(&(mindists[0]), gpu_mindists, nParticles * sizeof(float), cudaMemcpyDeviceToHost);
       cudaMemcpy(&(others[0]), gpu_others, nParticles * sizeof(int), cudaMemcpyDeviceToHost);
-      #endif
    }
 
 };
@@ -96,8 +86,6 @@ JetDataGPU::JetDataGPU()
 {
    p = new JetDataPrivateGPU;
 }
-
-#ifdef WITH_CUDA
 
 // uses asymmetrical distance and separate Particle struct
 __global__ void closest_finder_1(const int nParticles, const float R, const Particle* __restrict const particles, 
@@ -145,9 +133,8 @@ void closest_finder_wrapper(JetDataPrivateGPU& d)
 
       // launch the kernel
       const int N_BLOCKS = 1+(d.nIniParticles + BLOCK_SIZE - 1) / BLOCK_SIZE;
-      #ifdef WITH_CUDA
       closest_finder_1<<<N_BLOCKS,BLOCK_SIZE>>>(d.nParticles, d.R, d.gpu_particles, d.gpu_mindists, d.gpu_others);
-      #endif
+
       // Wait for GPU to finish before accessing on host
       // apparently we dont need it here
       // cudaDeviceSynchronize();
@@ -161,9 +148,3 @@ void findJetsGPU1(JetDataGPU& d, const float R)
 {
    jet_recombiner_CPU(*d.p,R,(closest_finder_alg)closest_finder_wrapper);
 }
-
-#else
-
-void findJetsGPU1(JetDataGPU& d, const float R){}
-
-#endif

@@ -1,5 +1,5 @@
-# set the cmake version
-cmake_minimum_required(VERSION 3.16...3.24)
+# set the cmake version (>= 3.17 needed for CUDAToolkit)
+cmake_minimum_required(VERSION 3.17...3.24)
 
 # set project name
 project(fasterjet VERSION 1.0 DESCRIPTION "faster than fastjet" LANGUAGES CXX)

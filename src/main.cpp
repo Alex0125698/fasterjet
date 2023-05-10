@@ -21,11 +21,10 @@ void runJetFinderCPUSingleCore()
 {
    // all data for our algorithms is stored here
    JetDataGPU data;
-   // JetData data;
 
    // initialize particle array randomly
-   makeRandomParticlesCPU(data, N_PARTICLES);
-   // makeRandomParticlesGPU(data, N_PARTICLES);
+   // makeRandomParticlesCPU(data, N_PARTICLES);
+   makeRandomParticlesGPU(data, N_PARTICLES);
 
    Timer timer;
 
