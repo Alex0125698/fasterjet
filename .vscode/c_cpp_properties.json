@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "name": "MyConfig",
+            "includePath": [
+                "${workspaceFolder}/include/",
+                "${workspaceFolder}/build/include/",
+                "E:/vcpkg/installed/x64-windows/include/",
+                "E:/vcpkg/installed/x64-windows/debug/external/",
+                "${workspaceFolder}/contrib"
+            ],
+            "defines": [],
+            "cStandard": "c11",
+            "cppStandard": "c++20",
+            "intelliSenseMode": "${default}"
+        }
+    ],
+    "version": 4
+}
+
+// cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_EXPORT_COMPILE_COMMANDS=ON ..

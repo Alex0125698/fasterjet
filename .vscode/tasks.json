@@ -1,0 +1,24 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "(Windows) build Debug",
+      "command": "cmake --build ${workspaceFolder}/build --config Debug --target fj",
+      "args": [],
+      "type": "shell"
+    },
+    {
+      "label": "(Windows) build Release",
+      "command": "cmake --build ${workspaceFolder}/build --config Release --target fj",
+      "args": [],
+      "type": "shell"
+    },
+    {
+      "label": "(linux) build",
+      "command": "cmake --build ${workspaceFolder}/build --target fj",
+      "args": [],
+      "type": "shell"
+    }
+   ]
+}
+// time

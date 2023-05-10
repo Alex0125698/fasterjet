@@ -1,0 +1,54 @@
+{
+  "configurations": [
+    {
+      "name": "(Windows) Debug",
+      "type": "cppvsdbg",
+      "console": "integratedTerminal",
+      "request": "launch",
+      // "program": "${workspaceFolder}/bin/Release/fj.exe",
+      "program": "${workspaceFolder}/bin/Debug/fj.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "preLaunchTask": "(Windows) build Debug",
+      "cwd": "${workspaceFolder}",
+      "environment": []
+    },
+    {
+      "name": "(Windows) Release",
+      "type": "cppvsdbg",
+      "console": "integratedTerminal",
+      "request": "launch",
+      // "program": "${workspaceFolder}/bin/Release/fj.exe",
+      "program": "${workspaceFolder}/bin/Release/fj.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "preLaunchTask": "(Windows) build Release",
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      
+
+    },
+    {
+      "name": "(Linux)",
+      "type": "cppdbg",
+      "request": "launch",
+      // "program": "${workspaceFolder}/bin/Release/fj",
+      "program": "${workspaceFolder}/bin/fj",
+      "args": [],
+      "stopAtEntry": false,
+      "preLaunchTask": "(linux) build",
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "MIMode": "gdb",
+      "setupCommands": [
+          {
+              "description": "Enable pretty-printing for gdb",
+              "text": "-enable-pretty-printing",
+              "ignoreFailures": true
+          }
+      ],
+      "miDebuggerPath": "/usr/bin/gdb"
+    },
+
+  ]
+}
