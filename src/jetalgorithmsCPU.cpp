@@ -21,6 +21,122 @@ using namespace AVX256;
 // also, j can be stored as an AVX register
 // NB: there are 16 avx registers (32 for avx512)
 
+// N.log(N), closest pair finder using divide & conquer (idiot version) 
+
+// N.log(N), closest pair finder using divide & conquer (no recursion or malloc)
+void closest_pair_finder(JetDataPrivate& d)
+{
+   // sort data in x-direction (phi-dir)
+   std::sort(&(d.particles[0]), &(d.particles[d.nParticles])
+        , [&](const Particle& a, const Particle& b){ return a.phi < b.phi; });
+
+   // assume data comes already sorted
+
+   // array for storing y-sorted data (eta-dir)
+   std::vector<Particle> yParts;
+   yParts.reserve(max(2ull,d.nParticles/5));
+
+   // stack-allocated array for storing sizes stack
+   std::array<size_t,32> sizes;
+   size_t send = 0;
+
+   // current global min dist
+   float minDist = MAX_FLOAT;
+   int minj = 0, minother = 0; // the closest pair
+
+
+
+   size_t currSize = 1;
+
+   while (currSize < d.nParticles)
+   {
+      currSize *= 2;
+
+      for (size_t i=0; i<d.nParticles; i+=currSize)
+      {
+         size_t start = i;
+         size_t end = min(d.nParticles, i+currSize)-1;
+
+         // calc mindist for trivial case
+         if (currSize == 2 && start != end)
+         {
+            auto pi = d.particles[start];
+            auto pj = d.particles[end];
+
+            float delta_phi = abs(pi.phi - pj.phi); 
+            delta_phi = min(delta_phi, 2*PI-delta_phi);
+            float sqRij = sq(pi.eta - pj.eta) + sq(delta_phi);
+            float dist = (sqRij / sq(d.R)) / sq(pi.pt);
+
+            if (dist < minDist)
+            {
+               minDist = dist;
+               minj = start;
+               minother = end;
+            }
+         }
+
+         // recombine with previous
+         {
+            size_t pstart = max(0ull,start-currSize);
+
+            // keep expanding boundary until we hit current mindist
+            size_t i = start, j = start;
+            while (i <= end && abs(d.particles[i].phi-d.particles[start].phi) < minDist) ++i;
+            while (i >= pstart && abs(d.particles[j].phi-d.particles[start].phi) < minDist) --j;
+
+            // copy this (hopefully short) subset into temporary buffer
+            yParts.clear();
+            std::copy(d.particles[j+1],d.particles[i], yParts.begin());
+
+            // now sort in the y-direction
+            std::sort(&(d.particles[0]), &(d.particles[d.nParticles])
+               , [&](const Particle& a, const Particle& b){ return a.eta < b.eta; });
+
+            // geometric arguments imply that we only need to search each set of up
+            // to 8 consecuative points in y-direction
+            
+            size_t start = 0;
+            while (start < yParts.size())
+            {
+               size_t end = min(start+8,yParts.size());
+
+               for (size_t i=start; i<end; ++i)
+               {
+                  for (size_t j=i+1; j<end; ++j)
+                  {
+                     auto pi = d.particles[i];
+                     auto pj = d.particles[j];
+
+                     float delta_phi = abs(pi.phi - pj.phi); 
+                     delta_phi = min(delta_phi, 2*PI-delta_phi);
+                     float sqRij = sq(pi.eta - pj.eta) + sq(delta_phi);
+                     float dist = (sqRij / sq(d.R)) / sq(pi.pt);
+
+
+                     if (dist < minDist)
+                     {
+                        minDist = dist;
+                        minj = start;
+                        minother = end;
+                     }
+                  }
+               }
+               start += 8;
+            }
+
+
+         }
+
+      }
+   }
+
+
+
+}
+
+// N.log(N), closest pair finder using divide & conquer (perfect)
+
 // generate N particles with randomized states
 void makeRandomParticlesCPU(JetData& d, const int N)
 {
@@ -61,6 +177,64 @@ void test(const float R, const size_t nParticles, float* const __restrict mindis
          {
             mindists[i] = dist;
             others[i] = j;
+         }
+      }
+   }
+}
+
+// same except with sort optimization
+void closest_finder_1C(JetDataPrivate& d)
+{
+   // initialize with beam axis distance
+   for (size_t i=0; i<d.nParticles; ++i)
+   {
+      d.mindists[i] = 1./sq(d.particles[i].pt);
+      d.others[i] = -1;
+   }
+
+   // check all distances to tother particles and get minimum
+   for (size_t i=0; i<d.nParticles; ++i)
+   {
+      auto pi = d.particles[i];
+      float scale = sq(pi.pt / d.R);
+
+      // search above until we hit distance limit
+      for (size_t j=i+1; j<d.nParticles; ++j)
+      {
+         auto pj = d.particles[j];
+         float delta_eta = sq(pi.eta - pj.eta)/scale;
+
+         // check if eta distance is getting to large
+         if (delta_eta >= d.mindists[i]) break;
+         
+         float delta_phi = abs(pi.phi - pj.phi); 
+         delta_phi = sq(min(delta_phi, 2*PI-delta_phi))/scale;
+         float dist = delta_phi + delta_eta;
+
+         if (dist < d.mindists[i])
+      {
+            d.mindists[i] = dist;
+            d.others[i] = j;
+         }
+      }
+
+      // search below until we hit distance limit
+      for (size_t j=i-1; j>=0; --j)
+      {
+         auto pj = d.particles[j];
+         float delta_eta = sq(pi.eta - pj.eta)/scale;
+
+         // check if eta distance is getting to large
+         if (delta_eta >= d.mindists[i]) break;
+
+         float delta_phi = abs(pi.phi - pj.phi); 
+         delta_phi = sq(min(delta_phi, 2*PI-delta_phi))/scale;
+         float dist = delta_phi + delta_eta;
+
+         if (dist < d.mindists[i])
+         {
+            d.mindists[i] = dist;
+            d.others[i] = j;
          }
       }
    }
