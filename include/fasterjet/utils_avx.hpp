@@ -12,7 +12,7 @@
 
 namespace AVX256
 {
-   constexpr size_t DX = 8;
+   constexpr int64 DX = 8;
    using vecXf = __m256;
    using vecXd = __m256d;
    using vecXi = __m256i;
@@ -44,7 +44,7 @@ namespace AVX256
 
 // namespace AVX512
 // {
-//    constexpr size_t DX = 16;
+//    constexpr int64 DX = 16;
 //    using vecXf = __m512;
 //    using vecXd = __m512d;
 //    using vecXi = __m512i;

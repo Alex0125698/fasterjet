@@ -4,6 +4,7 @@
             "name": "MyConfig",
             "includePath": [
                 "${workspaceFolder}/include/",
+                "${workspaceFolder}/contrib/fastjet/include/",
                 "${workspaceFolder}/build/include/",
                 "E:/vcpkg/installed/x64-windows/include/",
                 "E:/vcpkg/installed/x64-windows/debug/external/",

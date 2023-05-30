@@ -19,4 +19,5 @@ extern void findJetsCPU3(JetData& ioData, const float inR);
 extern void findJetsCPU4(JetData& ioData, const float inR);
 extern void findJetsCPU5(JetData& ioData, const float inR);
 extern void findJetsCPU6(JetData& ioData, const float inR);
+extern void findJetsCPU7(JetData& ioData, const float inR);
 extern void jet_recombiner_CPU(JetDataPrivate& d, const float inR, closest_finder_alg alg);

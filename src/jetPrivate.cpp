@@ -38,10 +38,10 @@ void JetDataPrivate::init(const std::vector<Particle>& p)
 
    // leave some headroom so that writes past
    // the end of array dont have any impact
-   constexpr size_t HEADROOM = 10*32;
+   constexpr int64 HEADROOM = 10*32;
    
    // get full size of arrays
-   size_t fullSize = HEADROOM + p.size();
+   int64 fullSize = HEADROOM + p.size();
 
    // allocate the memory if required
    if (nReserve < fullSize)
@@ -61,7 +61,7 @@ void JetDataPrivate::init(const std::vector<Particle>& p)
    }
 
    // copy in the new particle data
-   for (size_t i=0; i<p.size(); ++i)
+   for (int64 i=0; i<p.size(); ++i)
    {
       particles[i].eta = p[i].eta;
       particles[i].phi = p[i].phi;
@@ -83,7 +83,7 @@ void JetDataPrivate::init(const std::vector<Particle>& p)
 // fill in v_pt, v_eta, v_phi
 void JetDataPrivate::copyCPU2CPU()
 {
-   for (size_t i=0; i<nParticles; ++i)
+   for (int64 i=0; i<nParticles; ++i)
    {
       v_pt[i] = particles[i].pt;
       v_eta[i] = particles[i].eta;

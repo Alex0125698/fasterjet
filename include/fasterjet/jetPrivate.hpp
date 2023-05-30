@@ -14,19 +14,19 @@
 struct JetDataPrivate
 {
    // memory alligment for all arrays
-   static constexpr size_t ALIGNMENT = 32;
+   static constexpr int64 ALIGNMENT = 32;
 
    // todo: make this an input param
-   static constexpr float recombinePortion = 0.05;
+   static constexpr float recombinePortion = 0.1;
 
    // initial number of particles
-   size_t nIniParticles = 0;
+   int64 nIniParticles = 0;
    // current number of particles
-   size_t nParticles = 0;
+   int64 nParticles = 0;
    // full size of particle arrays
-   size_t nReserve = 0;
+   int64 nReserve = 0;
    // previous full size of particle arrays
-   size_t pnReserve = 0;
+   int64 pnReserve = 0;
    // jet "radius"
    float R = 0.0;
 
@@ -56,8 +56,8 @@ struct JetDataPrivate
 
    // store the K smallest mins here for each iteration
    std::vector<float> outKSmallest;
-   std::vector<size_t> outIndices; 
-   std::vector<size_t> doneIndices;
+   std::vector<int64> outIndices; 
+   std::vector<int64> doneIndices;
 
    // free all memory
    virtual void free();

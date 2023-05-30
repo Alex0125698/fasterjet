@@ -59,10 +59,10 @@ class ThreadPool
 {
 public:
 
-   ThreadPool(const size_t workerCount)
+   ThreadPool(const int64 workerCount)
    {
       workers.reserve(workerCount);
-      for (size_t i=0; i<workerCount; ++i)
+      for (int64 i=0; i<workerCount; ++i)
          workers.emplace_back(std::make_shared<std::jthread>(std::jthread(std::bind_front(&ThreadPool::threadKernel,this))));
    }
 

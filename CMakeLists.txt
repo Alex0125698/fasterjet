@@ -56,7 +56,32 @@ set_target_properties(fj PROPERTIES CXX_EXTENSIONS OFF)
 find_package(Eigen3 CONFIG REQUIRED)
 target_link_libraries(fj PUBLIC Eigen3::Eigen)
 target_link_libraries(fj PUBLIC fjcu)
-target_include_directories(fj PUBLIC "include/" "${PROJECT_BINARY_DIR}/include/")
+target_include_directories(fj PUBLIC "include/" "${PROJECT_BINARY_DIR}/include/" "contrib/" "contrib/fastjet/include/")
+
+add_library(fastjettools STATIC IMPORTED)
+add_library(fastjet STATIC IMPORTED)
+add_library(fastjetplugins STATIC IMPORTED)
+add_library(siscone_spherical STATIC IMPORTED)
+add_library(siscone STATIC IMPORTED)
+
+set(tmpA "${CMAKE_CURRENT_SOURCE_DIR}/contrib/fastjet/fastjet-install/lib/")
+set(tmpB "${CMAKE_CURRENT_SOURCE_DIR}/contrib/fastjet/include/")
+
+set_target_properties(fastjettools PROPERTIES IMPORTED_LOCATION "${tmpA}/libfastjettools.a" INTERFACE_INCLUDE_DIRECTORIES "${tmpB}")
+set_target_properties(fastjet PROPERTIES IMPORTED_LOCATION "${tmpA}/libfastjet.a" INTERFACE_INCLUDE_DIRECTORIES "${tmpB}")
+set_target_properties(fastjetplugins PROPERTIES IMPORTED_LOCATION "${tmpA}/libfastjetplugins.a" INTERFACE_INCLUDE_DIRECTORIES "${tmpB}")
+set_target_properties(siscone_spherical PROPERTIES IMPORTED_LOCATION "${tmpA}/libsiscone_spherical.a" INTERFACE_INCLUDE_DIRECTORIES "${tmpB}")
+set_target_properties(siscone PROPERTIES IMPORTED_LOCATION "${tmpA}/libsiscone.a" INTERFACE_INCLUDE_DIRECTORIES "${tmpB}")
+
+
+# link_directories("contrib/fastjet/fastjet-install/lib/")
+# link_directories("${CMAKE_CURRENT_SOURCE_DIR}/contrib/fastjet/fastjet-install/lib/")
+target_link_libraries(fj PUBLIC fastjettools)
+target_link_libraries(fj PUBLIC fastjet)
+target_link_libraries(fj PUBLIC fastjetplugins)
+target_link_libraries(fj PUBLIC siscone_spherical)
+target_link_libraries(fj PUBLIC siscone)
+
 
 if (UNIX)
   target_link_libraries(fj PUBLIC -lpthread -ldl)

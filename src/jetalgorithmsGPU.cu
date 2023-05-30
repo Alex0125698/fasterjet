@@ -94,7 +94,7 @@ __global__ void closest_finder_1(const int nParticles, const float R, const Part
    int index = blockIdx.x * blockDim.x + threadIdx.x;
    if (index >= nParticles) return; 
    
-   size_t i = index;
+   int64 i = index;
 
    // initialize with beam axis distance
    mindists[i] = 1./sqr(particles[index].pt);
@@ -106,7 +106,7 @@ __global__ void closest_finder_1(const int nParticles, const float R, const Part
    int other = others[i];
    auto pi = particles[i];
 
-   for (size_t j=0; j<nParticles; ++j)
+   for (int64 j=0; j<nParticles; ++j)
    {
       auto pj = particles[j];
 

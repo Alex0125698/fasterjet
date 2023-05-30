@@ -22,7 +22,7 @@ constexpr float PI = (float)3.141592653589793;
 constexpr float MAX_FLOAT = std::numeric_limits<float>::max();
 
 // same as malloc but the address will be an integer multiple of the given alignment
-void *aligned_malloc2(size_t alignment, size_t required_bytes);
+void *aligned_malloc2(int64 alignment, int64 required_bytes);
 
 // aligned free to be used with above
 void aligned_free2(void* p);
@@ -34,7 +34,7 @@ inline float sq(const float x)
 }
 
 // find K smallest elements of some array (and corresponding indices). Result is sorted with lowest first.
-void findKSmallest(const size_t N, const float* const data, const size_t K, vector<float>& outKSmallest, vector<size_t>& outIndices);
+void findKSmallest(const int64 N, const float* const data, const int64 K, vector<float>& outKSmallest, vector<int64>& outIndices);
 
 using std::min;
 using std::max;

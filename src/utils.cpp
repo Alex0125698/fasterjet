@@ -36,13 +36,13 @@ double random(const double a, const double b)
    return dist(rng);
 }
 
-void *aligned_malloc2(size_t alignment, size_t required_bytes) 
+void *aligned_malloc2(int64 alignment, int64 required_bytes) 
 {
     void *p1;
     void **p2;
     int offset=alignment-1+sizeof(void*);
     p1 = malloc(required_bytes + offset);               // the line you are missing
-    p2=(void**)(((size_t)(p1)+offset)&~(alignment-1));  //line 5
+    p2=(void**)(((int64)(p1)+offset)&~(alignment-1));  //line 5
     p2[-1]=p1; //line 6
     return p2;
 }
@@ -53,7 +53,7 @@ void aligned_free2( void* p )
     free( p1 );
 }
 
-void findKSmallest(const size_t N, const float* const data, const size_t K, std::vector<float>& outKSmallest, std::vector<size_t>& outIndices)
+void findKSmallest(const int64 N, const float* const data, const int64 K, std::vector<float>& outKSmallest, std::vector<int64>& outIndices)
 {
    // Performance: best O(N+K), worst(NK)
 
@@ -64,10 +64,10 @@ void findKSmallest(const size_t N, const float* const data, const size_t K, std:
    outIndices.resize(K,0);
 
    // loop over data (N steps)
-   for(size_t i=0; i<N; ++i)
+   for(int64 i=0; i<N; ++i)
    {
       // check if it is smaller than the biggest value in our subset
-      size_t k = K-1;
+      int64 k = K-1;
       if (data[i] < outKSmallest[k])
       {
          // figure out which position in the k-array it belongs to (max K steps)
