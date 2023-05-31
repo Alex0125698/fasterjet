@@ -73,7 +73,7 @@ void findJetsFJ1(JetDataGPU& data, const float R)
     std::cout << "nJets " << jets.size() << std::endl;
 }
 
-// number of particles (actually its 1 less since we include the beam axis)
+// number of particles
 constexpr int64 N_PARTICLES = 512;
 // "radius" for jet finder
 constexpr float R = 1.5;
