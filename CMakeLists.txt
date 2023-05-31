@@ -64,7 +64,7 @@ add_library(fastjetplugins STATIC IMPORTED)
 add_library(siscone_spherical STATIC IMPORTED)
 add_library(siscone STATIC IMPORTED)
 
-set(tmpA "${CMAKE_CURRENT_SOURCE_DIR}/contrib/fastjet/fastjet-install/lib/")
+set(tmpA "${CMAKE_CURRENT_SOURCE_DIR}/contrib/fastjet/buildd/lib/")
 set(tmpB "${CMAKE_CURRENT_SOURCE_DIR}/contrib/fastjet/include/")
 
 set_target_properties(fastjettools PROPERTIES IMPORTED_LOCATION "${tmpA}/libfastjettools.a" INTERFACE_INCLUDE_DIRECTORIES "${tmpB}")
@@ -74,8 +74,9 @@ set_target_properties(siscone_spherical PROPERTIES IMPORTED_LOCATION "${tmpA}/li
 set_target_properties(siscone PROPERTIES IMPORTED_LOCATION "${tmpA}/libsiscone.a" INTERFACE_INCLUDE_DIRECTORIES "${tmpB}")
 
 
-# link_directories("contrib/fastjet/fastjet-install/lib/")
-# link_directories("${CMAKE_CURRENT_SOURCE_DIR}/contrib/fastjet/fastjet-install/lib/")
+
+# link_directories("contrib/fastjet/buildd/lib/")
+# link_directories("${CMAKE_CURRENT_SOURCE_DIR}/contrib/fastjet/buildd/lib/")
 target_link_libraries(fj PUBLIC fastjettools)
 target_link_libraries(fj PUBLIC fastjet)
 target_link_libraries(fj PUBLIC fastjetplugins)
